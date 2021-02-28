@@ -60,7 +60,7 @@ function PhotoBooth() {
         imageSmoothing={true}
         videoConstraints={videoConstraints}
       />
-      {/* <IntroScreen /> */}
+      <IntroScreen />
       {/* <CountDownScreen /> */}
       {photoWasJustTaken ? <PhotoResultsScreen /> : null }
     </div>
