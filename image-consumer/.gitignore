@@ -131,3 +131,5 @@ node_modules
 
 # other
 uploads/*
+
+.DS_Store
