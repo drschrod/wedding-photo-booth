@@ -93,18 +93,6 @@ export default function PhotoResultsScreen() {
             src={images[0].img}
             title="t"
           />
-          <CardMedia
-            className={classes.media}
-            component="img"
-            src={images[1].img}
-            title="t"
-          />
-          <CardMedia
-            className={classes.media}
-            component="img"
-            src={images[2].img}
-            title="t"
-          />
         </>}
 
       </Card>

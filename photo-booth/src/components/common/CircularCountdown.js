@@ -3,10 +3,17 @@ import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Zoom from '@material-ui/core/Zoom';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+      color: 'white'
+    },
+  }));
 
 function CircularProgressWithLabel(props) {
-    return (
+  const classes = useStyles();
+  return (
         <Box position="relative" display="inline-flex">
             <CircularProgress variant="indeterminate" size={400}  />
             <Box
@@ -19,7 +26,7 @@ function CircularProgressWithLabel(props) {
                 alignItems="center"
                 justifyContent="center"
             >
-                <Typography variant="h1" component="div" color="textSecondary">{props.displayValue}</Typography>
+                <Typography className={classes.root} variant="h1" component="div" color="white">{props.displayValue}</Typography>
             </Box>
         </Box>
     );
@@ -27,6 +34,7 @@ function CircularProgressWithLabel(props) {
 
 CircularProgressWithLabel.propTypes = {
     displayValue: PropTypes.number.isRequired,
+    zoomInOrOut: PropTypes.bool.isRequired
 };
 
 export default function CircularCountdown({ count }) {
