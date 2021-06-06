@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import AliceCarousel from 'react-alice-carousel';
-import 'react-alice-carousel/lib/alice-carousel.css';
 import { fetchImagePreview } from '../modules/requests';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,6 +17,16 @@ const useStyles = makeStyles((theme) => ({
   carouselImgs: {
     height: '100%',
     width: '100%'
+  },
+  upperCarousel: {
+    bottom: '0px',
+    position: 'absolute'
+  },
+  lowerCarousel: {
+    height: '100%',
+    width: '100%',
+    bottom: '0px',
+    position: 'fixed'
   }
 }));
 
@@ -70,37 +79,11 @@ const responsive = {
 
   return (
     <div tabIndex="-9999" className={classes.root}>
-      <AliceCarousel 
-        autoPlayDirection={'rtl'}
-        autoPlay={true} 
-        responsive={responsive} 
-        disableButtonsControls={true} 
-        disableDotsControls={true} 
-        infinite={true} 
-        items={images}
-        animationEasingFunction={'linear'}
-        autoPlayInterval={0}
-        animationDuration={2000}
-      />
+      
       <h1>Press The Button</h1>
-      <iframe 
-        src={gif} 
-        width="480" height="270" 
-        frameBorder="0" 
-        allowFullScreen={false}>
-      </iframe>
       <h1>To Start</h1>
-      <AliceCarousel 
-        autoPlay={true} 
-        responsive={responsive} 
-        disableButtonsControls={true} 
-        disableDotsControls={true} 
-        infinite={true} 
-        items={images}
-        animationEasingFunction={'linear'}
-        autoPlayInterval={0}
-        animationDuration={2000}
-      />
+      
+      
     </div>
 
   );

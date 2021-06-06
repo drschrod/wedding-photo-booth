@@ -10,8 +10,8 @@ export const resolutions = {
     'qHD': { width: 960, height: 540 },
     'ExactWidth': { width: 1080, height: 608 }
 }
-export const videoConstraints = {
-    ...resolutions['ExactWidth'],
+export const videoConstraints = (res='ExactWidth') => ({
+    ...resolutions[res],
     facingMode: 'user',
-};
+});
 

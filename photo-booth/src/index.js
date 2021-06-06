@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import PhotoBooth from './PhotoBooth';
+import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <PhotoBooth />
+    <App />
   </React.StrictMode>,
   document.getElementById('root'),
 );
