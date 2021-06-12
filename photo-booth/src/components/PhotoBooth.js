@@ -1,18 +1,15 @@
 import React, { Component, useEffect, useState } from 'react';
-import IntroScreen from './IntroScreen';
 import CountDownScreen from './CountDownScreen';
 import PhotoResultsScreen from './PhotoResultsScreen';
 import { makeStyles } from '@material-ui/core/styles';
 import Webcam from 'react-webcam';
 import { postImage } from '../modules/requests';
 import { resolutions, videoConstraints } from '../modules/camera';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import { Box, Typography, Paper, Grid, rgbToHex } from '@material-ui/core';
 
-const webcamDimensions = videoConstraints('SD');
+const webcamDimensions = videoConstraints();
 const oneSecond = 1000;
 const photoCountdownSpeed = oneSecond * 1.5;
 
@@ -21,22 +18,22 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: '#424955',
     maxHeight: '100%',
+    height: 1920,
+    width: 1080,
+    paddingTop: '5%',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     color: 'white'
   },
-  paper: {
-    padding: theme.spacing(2),
-    margin: 'auto',
-    backgroundColor: 'dark'
-  },
   cameraPaper: {
+    zIndex: 999,
     padding: theme.spacing(2),
     margin: 'auto',
     maxWidth: webcamDimensions.width,
     backgroundColor: 'white'
   },
   cameraFeed: {
+    zIndex: 998,
     display: 'flex',
     flexDirection: 'column',
     textAlign: 'center',
@@ -46,7 +43,18 @@ const useStyles = makeStyles((theme) => ({
   },
   crosshairs: {
     color: "white",
-    opacity: 0.5
+    opacity: 0.5,
+    fontSize: 100,
+  },
+  viewFinder: {
+    fill: 'None',
+    strokeWidth: 10,
+    stroke: 'white',
+    opacity: 0.5,
+    position: "absolute",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   }
 }));
 
@@ -60,6 +68,7 @@ function PhotoBooth() {
   const [capturedImg, setCapturedImage] = React.useState(null);
   const [zoomInOrOut, setZoomInOrOut] = React.useState(false);
 
+  const endPhotoTimeout = oneSecond * 10;
   const resetCountdownInterval = () => {
     try {
       clearInterval(countDownInterval.current)
@@ -74,21 +83,22 @@ function PhotoBooth() {
   };
 
   const capture = React.useCallback(async () => {
-    setCapturedImage(webcamRef.current.getScreenshot(resolutions['1080p']));
+    // NOTE: Do not specify the dimensions in the getScreenshot fn
+    // That causes a mishaped image to be saved
+    setCapturedImage(webcamRef.current.getScreenshot());
     setPhotoWasJustTaken(true);
+    setCurrentlyTakingPhoto(false);
     await postImage('/upload', capturedImg);
   }, [webcamRef, setPhotoWasJustTaken, setCapturedImage]);
 
   useEffect(() => {
     if (photoWasJustTaken) {
       console.log('useEffect: photoWasJustTaken')
-      setCurrentlyTakingPhoto(false);
       resetCountdownInterval();
-      // NOTE add progress bar to this timeout
       setTimeout(() => {
         console.log('useEffect: photoWasJustTaken - timeout action')
         setPhotoWasJustTaken(false);
-      }, oneSecond * 10);
+      }, endPhotoTimeout);
       return;
     }
   }, [photoWasJustTaken]);
@@ -126,52 +136,90 @@ function PhotoBooth() {
 
   // TEMP Component breakdown
   const CameraViewfinder = (
-    <Grid item className={classes.cameraFeed}>
-          <Paper elevation={4} className={classes.cameraPaper}>
-            <Box position="relative" display="inline-flex">
-              <Webcam
-                ref={webcamRef}
-                mirrored={true}
-                audio={false}
-                screenshotFormat="image/png"
-                screenshotQuality={1}
-                forceScreenshotSourceSize={false}
-                imageSmoothing={true}
-                videoConstraints={webcamDimensions}
-              />
-              <Box
-                top={0}
-                left={0}
-                bottom={0}
-                right={0}
-                position="absolute"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                {currentlyTakingPhoto ? <CountDownScreen count={countDown} zoomInOrOut={zoomInOrOut} /> : <AddRoundedIcon className={classes.crosshairs} fontSize="large"></AddRoundedIcon>}
-              </Box>
-            </Box>
-          </Paper>
-        </Grid>
+    <div className={classes.cameraFeed}>
+      <Paper elevation={4} className={classes.cameraPaper}>
+        <Box position="relative" display="inline-flex">
+          <Webcam
+            ref={webcamRef}
+            mirrored={true}
+            audio={false}
+            screenshotFormat="image/png"
+            screenshotQuality={1}
+            forceScreenshotSourceSize={true}
+            imageSmoothing={false}
+            videoConstraints={webcamDimensions}
+            {...{...resolutions['qHD']}}
+          />
+          <Box
+            top={0}
+            left={0}
+            bottom={0}
+            right={0}
+            position="absolute"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            {currentlyTakingPhoto ? <CountDownScreen count={countDown} zoomInOrOut={zoomInOrOut} /> : <AddRoundedIcon className={classes.crosshairs} ></AddRoundedIcon>}
+          </Box>
+          <Box
+            top={resolutions['qHD'].height  * 0.1}
+            left={resolutions['qHD'].width * 0.1}
+            bottom={0}
+            right={0}
+            position="absolute"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <svg className={classes.viewFinder} {...{...resolutions['qHD']}}>
+              <rect {...{ width: resolutions['qHD'].width * 0.90, height: resolutions['qHD'].height * 0.90}}  />
+            </svg> 
+          </Box>
+          <Box
+            top={0}
+            left={0}
+            bottom={0}
+            right={0}
+            position="absolute"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            {photoWasJustTaken ? <PhotoResultsScreen photo={capturedImg} {...{...resolutions['qHD'], endPhotoTimeout}}/> : null}
+          </Box>
+        </Box>
+      </Paper>
+    </div>
   )
   // -------------------------
-
+  const InstructionsFooter = (
+    <div>
+        <Box
+          left='10%'
+          right='10%'
+          bottom={0}
+          margin='auto'
+          position="absolute"
+          justify='space-around'
+        >
+          <Typography align='center' variant="h2" >
+            Push Button to Take a Picture
+            </Typography>
+          <Grid container direction="row" justify='space-around'>
+            <Grid item>< ArrowDownwardIcon style={{ fontSize: 100 }} ></ArrowDownwardIcon></Grid>
+            <Grid item>< ArrowDownwardIcon style={{ fontSize: 100 }} ></ArrowDownwardIcon></Grid>
+            <Grid item>< ArrowDownwardIcon style={{ fontSize: 100 }} ></ArrowDownwardIcon></Grid>
+          </Grid>
+        </Box>
+      </div>
+  );
   return (
     <div tabIndex="1" onKeyPress={onKeyUp} className={classes.root}>
-      <Grid container spacing={2} direction="column">
-        {photoWasJustTaken ? <PhotoResultsScreen /> : CameraViewfinder}
-      </Grid>
+      
+      {CameraViewfinder}
       {/* Lower Half of screen has instructions. ie; press the damn button */}
-      <Paper className={classes.paper}>
-        <Grid container spacing={2} direction="column">
-          <Grid item>
-            <Typography variant="h1" >
-              Press Button to Start!
-            </Typography>
-          </Grid>
-        </Grid>
-      </Paper>
+      {InstructionsFooter}
     </div>
   );
 }

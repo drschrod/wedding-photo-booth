@@ -14,17 +14,6 @@ import BacksidePreview from './components/BacksidePreview';
     return (
       <Router>
         <div>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/photobooth">Photobooth Page</Link>
-              </li>
-              <li>
-                <Link to="/photo-previews">Preview Page</Link>
-              </li>
-            </ul>
-          </nav>
-  
           {/* A <Switch> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
           <Switch>
