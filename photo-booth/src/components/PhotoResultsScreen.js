@@ -6,14 +6,7 @@ import PropTypes from 'prop-types';
 import Slide from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
 
-const useStyles = makeStyles((theme) => ({
-  cameraPaper: {
-    padding: theme.spacing(2),
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'white'
-  },
-}));
+
 
 /**
  * The example data is structured as follows:
@@ -34,6 +27,16 @@ const useStyles = makeStyles((theme) => ({
  * ];
  */
 export default function PhotoResultsScreen({photo, height, width, endPhotoTimeout}) {
+  const useStyles = makeStyles((theme) => ({
+    cameraPaper: {
+      padding: theme.spacing(2),
+      paddingBottom: '2%',
+      width: width * 0.85,
+      height: height,
+      margin: 'auto',
+      backgroundColor: 'white'
+    },
+  }));
   const classes = useStyles();
   const [show, setShow] = useState(true)
   const enter = 2000;
@@ -43,18 +46,19 @@ export default function PhotoResultsScreen({photo, height, width, endPhotoTimeou
   }, [])
 
   return (
-    <Fade in={show} timeout={{ exit: 1500}}>
-      {/* <Slide direction="down" in={show} timeout={{ enter, exit}} mountOnEnter unmountOnExit> */}
+      <Fade  in={show} timeout={{ exit: 1500}}>
+      <Slide direction="down" in={true} timeout={{ enter }} mountOnEnter unmountOnExit>
         <Paper elevation={4} className={classes.cameraPaper}>
           <Image
             src={photo}
             onClick={() => console.log('onClick')}
             aspectRatio={16/9}
-            imageStyle={{height: height * 0.95, width: width * 0.95}}
+            imageStyle={{height: 0.85 * height, width: 0.85 * width, }}
             disableSpinner
           />
         </Paper>
-      {/* </Slide> */}
+        
+      </Slide>
     </Fade>
     
     

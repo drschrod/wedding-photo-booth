@@ -1,13 +1,15 @@
 import React, { Component, useEffect, useState } from 'react';
 import CountDownScreen from './CountDownScreen';
+import BorderLinearProgress from './common/LinearProgress';
 import PhotoResultsScreen from './PhotoResultsScreen';
 import { makeStyles } from '@material-ui/core/styles';
 import Webcam from 'react-webcam';
 import { postImage } from '../modules/requests';
 import { resolutions, videoConstraints } from '../modules/camera';
-import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import { Box, Typography, Paper, Grid, rgbToHex } from '@material-ui/core';
+import Fade from '@material-ui/core/Fade';
 
 const webcamDimensions = videoConstraints();
 const oneSecond = 1000;
@@ -55,6 +57,16 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  lensCover: {
+    fill: 'black',
+    strokeWidth: 10,
+    stroke: 'black',
+    // opacity: 0.5,
+    position: "absolute",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   }
 }));
 
@@ -68,7 +80,7 @@ function PhotoBooth() {
   const [capturedImg, setCapturedImage] = React.useState(null);
   const [zoomInOrOut, setZoomInOrOut] = React.useState(false);
 
-  const endPhotoTimeout = oneSecond * 10;
+  const endPhotoTimeout = oneSecond * 30;
   const resetCountdownInterval = () => {
     try {
       clearInterval(countDownInterval.current)
@@ -116,6 +128,18 @@ function PhotoBooth() {
         }
       }, photoCountdownSpeed)
     }
+    // if (photoWasJustTaken && countDown === 0) {
+    //   countDownInterval.current = setInterval(() => {
+    //     if (countDown === 0) {
+    //       setZoomInOrOut(false);
+    //       setCountDown(3);
+    //       capture();
+    //     } else {
+    //       setCountDown(countDown - 1);
+    //       console.log(countDown)
+    //     }
+    //   }, photoCountdownSpeed)
+    // }
 
     return () => clearInterval(countDownInterval.current);
   }, [countDown, currentlyTakingPhoto])
@@ -160,7 +184,7 @@ function PhotoBooth() {
             alignItems="center"
             justifyContent="center"
           >
-            {currentlyTakingPhoto ? <CountDownScreen count={countDown} zoomInOrOut={zoomInOrOut} /> : <AddRoundedIcon className={classes.crosshairs} ></AddRoundedIcon>}
+            <AddRoundedIcon className={classes.crosshairs} ></AddRoundedIcon>
           </Box>
           <Box
             top={resolutions['qHD'].height  * 0.1}
@@ -176,7 +200,8 @@ function PhotoBooth() {
               <rect {...{ width: resolutions['qHD'].width * 0.90, height: resolutions['qHD'].height * 0.90}}  />
             </svg> 
           </Box>
-          <Box
+          <Fade in={photoWasJustTaken}>
+            <Box
             top={0}
             left={0}
             bottom={0}
@@ -186,8 +211,12 @@ function PhotoBooth() {
             alignItems="center"
             justifyContent="center"
           >
-            {photoWasJustTaken ? <PhotoResultsScreen photo={capturedImg} {...{...resolutions['qHD'], endPhotoTimeout}}/> : null}
+            <svg className={classes.lensCover} {...{...resolutions['qHD']}}>
+              <rect {...{ width: resolutions['qHD'].width, height: resolutions['qHD'].height}}  />
+            </svg> 
           </Box>
+            </Fade>
+          
         </Box>
       </Paper>
     </div>
@@ -218,6 +247,22 @@ function PhotoBooth() {
     <div tabIndex="1" onKeyPress={onKeyUp} className={classes.root}>
       
       {CameraViewfinder}
+      { currentlyTakingPhoto ? 
+          <Box 
+            display="flex"
+            alignItems="center"
+            justifyContent="center" margin="10%">
+              <CountDownScreen count={countDown} zoomInOrOut={zoomInOrOut} />
+          </Box> : 
+          null
+      }
+      
+
+      {/* {photoWasJustTaken || true ?  */}
+      { photoWasJustTaken ?
+              <PhotoResultsScreen photo={capturedImg} {...{...webcamDimensions, endPhotoTimeout}}/>
+
+      : null }
       {/* Lower Half of screen has instructions. ie; press the damn button */}
       {InstructionsFooter}
     </div>
