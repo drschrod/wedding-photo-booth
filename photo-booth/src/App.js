@@ -17,10 +17,10 @@ import BacksidePreview from './components/BacksidePreview';
           {/* A <Switch> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
           <Switch>
-            <Route path="/photobooth">
+            <Route exact path="/front">
               <PhotoBooth />
             </Route>
-            <Route path="/backside-previews">
+            <Route exact path="/back">
               <BacksidePreview />
             </Route>
           </Switch>

@@ -144,19 +144,29 @@ function PhotoBooth() {
     return () => clearInterval(countDownInterval.current);
   }, [countDown, currentlyTakingPhoto])
 
-  const onKeyUp = (e) => {
-    switch (e.key) {
-      case 't':
-        if (!currentlyTakingPhoto) {
-          setZoomInOrOut(true)
-          setCurrentlyTakingPhoto(true);
-        }
-        break;
-      default:
-        forceResetPage();
-        break;
+  useEffect(() => {
+    function handleKeyDown(e) {
+      switch (e.key) {
+        case 't':
+          if (!currentlyTakingPhoto) {
+            setZoomInOrOut(true)
+            setCurrentlyTakingPhoto(true);
+          }
+          break;
+        default:
+          forceResetPage();
+          break;
+      }
     }
-  };
+
+    document.addEventListener('keydown', handleKeyDown);
+    window.open('/back')
+    // Don't forget to clean up
+    return function cleanup() {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, []);
+  
 
   // TEMP Component breakdown
   const CameraViewfinder = (
@@ -244,7 +254,7 @@ function PhotoBooth() {
       </div>
   );
   return (
-    <div tabIndex="1" onKeyPress={onKeyUp} className={classes.root}>
+    <div tabIndex="1" className={classes.root}>
       
       {CameraViewfinder}
       { currentlyTakingPhoto ? 
