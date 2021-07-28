@@ -10,6 +10,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import { Box, Typography, Paper, Grid, rgbToHex } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
+import CircularCountdown from './common/CircularCountdown';
 
 const webcamDimensions = videoConstraints();
 const oneSecond = 1000;
@@ -97,10 +98,12 @@ function PhotoBooth() {
   const capture = React.useCallback(async () => {
     // NOTE: Do not specify the dimensions in the getScreenshot fn
     // That causes a mishaped image to be saved
-    setCapturedImage(webcamRef.current.getScreenshot());
+    const screenshot = await webcamRef.current.getScreenshot()
+    setCapturedImage(() => screenshot);
+
     setPhotoWasJustTaken(true);
     setCurrentlyTakingPhoto(false);
-    await postImage('/upload', capturedImg);
+    await postImage('/upload', screenshot);
   }, [webcamRef, setPhotoWasJustTaken, setCapturedImage]);
 
   useEffect(() => {
@@ -160,15 +163,58 @@ function PhotoBooth() {
     }
 
     document.addEventListener('keydown', handleKeyDown);
-    window.open('/back')
+    // window.open('/back')
     // Don't forget to clean up
     return function cleanup() {
       document.removeEventListener('keydown', handleKeyDown);
     }
   }, []);
-  
 
-  // TEMP Component breakdown
+  const CameraOverlay = (<>
+    <Box
+      top={0}
+      left={0}
+      bottom={0}
+      right={0}
+      position="absolute"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <AddRoundedIcon className={classes.crosshairs} ></AddRoundedIcon>
+    </Box>
+    <Box
+      top={resolutions['qHD'].height * 0.1}
+      left={resolutions['qHD'].width * 0.1}
+      bottom={0}
+      right={0}
+      position="absolute"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <svg className={classes.viewFinder} {...{ ...resolutions['qHD'] }}>
+        <rect {...{ width: resolutions['qHD'].width * 0.90, height: resolutions['qHD'].height * 0.90 }} />
+      </svg>
+    </Box>
+  </>)
+  const PhotoResult = (<Fade in={photoWasJustTaken}>
+    <Box
+      top={0}
+      left={0}
+      bottom={0}
+      right={0}
+      position="absolute"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <svg className={classes.lensCover} {...{ ...resolutions['qHD'] }}>
+        <rect {...{ width: resolutions['qHD'].width, height: resolutions['qHD'].height }} />
+      </svg>
+    </Box>
+  </Fade>);
+
   const CameraViewfinder = (
     <div className={classes.cameraFeed}>
       <Paper elevation={4} className={classes.cameraPaper}>
@@ -179,54 +225,16 @@ function PhotoBooth() {
             audio={false}
             screenshotFormat="image/png"
             screenshotQuality={1}
-            forceScreenshotSourceSize={true}
+            forceScreenshotSourceSize={false}
+            minScreenshotHeight={1080}
+            minScreenshotWidth={1920}
             imageSmoothing={false}
             videoConstraints={webcamDimensions}
-            {...{...resolutions['qHD']}}
+            {...{ ...resolutions['qHD'] }}
           />
-          <Box
-            top={0}
-            left={0}
-            bottom={0}
-            right={0}
-            position="absolute"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <AddRoundedIcon className={classes.crosshairs} ></AddRoundedIcon>
-          </Box>
-          <Box
-            top={resolutions['qHD'].height  * 0.1}
-            left={resolutions['qHD'].width * 0.1}
-            bottom={0}
-            right={0}
-            position="absolute"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <svg className={classes.viewFinder} {...{...resolutions['qHD']}}>
-              <rect {...{ width: resolutions['qHD'].width * 0.90, height: resolutions['qHD'].height * 0.90}}  />
-            </svg> 
-          </Box>
-          <Fade in={photoWasJustTaken}>
-            <Box
-            top={0}
-            left={0}
-            bottom={0}
-            right={0}
-            position="absolute"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <svg className={classes.lensCover} {...{...resolutions['qHD']}}>
-              <rect {...{ width: resolutions['qHD'].width, height: resolutions['qHD'].height}}  />
-            </svg> 
-          </Box>
-            </Fade>
-          
+          {CameraOverlay}
+          {PhotoResult}
+
         </Box>
       </Paper>
     </div>
@@ -234,45 +242,41 @@ function PhotoBooth() {
   // -------------------------
   const InstructionsFooter = (
     <div>
-        <Box
-          left='10%'
-          right='10%'
-          bottom={0}
-          margin='auto'
-          position="absolute"
-          justify='space-around'
-        >
-          <Typography align='center' variant="h2" >
-            Push Button to Take a Picture
-            </Typography>
-          <Grid container direction="row" justify='space-around'>
-            <Grid item>< ArrowDownwardIcon style={{ fontSize: 100 }} ></ArrowDownwardIcon></Grid>
-            <Grid item>< ArrowDownwardIcon style={{ fontSize: 100 }} ></ArrowDownwardIcon></Grid>
-            <Grid item>< ArrowDownwardIcon style={{ fontSize: 100 }} ></ArrowDownwardIcon></Grid>
-          </Grid>
-        </Box>
-      </div>
+      <Box
+        left='10%'
+        right='10%'
+        bottom={0}
+        margin='auto'
+        position="absolute"
+        justify='space-around'
+      >
+        <Typography align='center' variant="h2" >
+          Push Button to Take a Picture
+        </Typography>
+        <Grid container direction="row" justify='space-around'>
+          <Grid item>< ArrowDownwardIcon style={{ fontSize: 100 }} ></ArrowDownwardIcon></Grid>
+          <Grid item>< ArrowDownwardIcon style={{ fontSize: 100 }} ></ArrowDownwardIcon></Grid>
+          <Grid item>< ArrowDownwardIcon style={{ fontSize: 100 }} ></ArrowDownwardIcon></Grid>
+        </Grid>
+      </Box>
+    </div>
   );
   return (
     <div tabIndex="1" className={classes.root}>
-      
+
       {CameraViewfinder}
-      { currentlyTakingPhoto ? 
-          <Box 
-            display="flex"
-            alignItems="center"
-            justifyContent="center" margin="10%">
-              <CountDownScreen count={countDown} zoomInOrOut={zoomInOrOut} />
-          </Box> : 
-          null
+      {currentlyTakingPhoto ?
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center" margin="10%">
+          <CountDownScreen count={countDown} zoomInOrOut={zoomInOrOut} />
+        </Box> :
+        null
       }
-      
-
-      {/* {photoWasJustTaken || true ?  */}
-      { photoWasJustTaken ?
-              <PhotoResultsScreen photo={capturedImg} {...{...webcamDimensions, endPhotoTimeout}}/>
-
-      : null }
+      {photoWasJustTaken ?
+        <PhotoResultsScreen photo={capturedImg} {...{ ...webcamDimensions, endPhotoTimeout }} />
+        : null}
       {/* Lower Half of screen has instructions. ie; press the damn button */}
       {InstructionsFooter}
     </div>

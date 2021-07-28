@@ -23,35 +23,24 @@ function CircularProgressWithLabel(props) {
         break;
     case 2:
         text = 2;
-
         circleColor = 'yellow'
         break;
     case 1:
         text = 1;
-
         circleColor = 'yellow'
         break;
-    default:
+    case 0:
         fontSize = 100;
+        circleColor='green'
+        break;
+    default:
+        text = props.displayValue;
         circleColor = 'green'
         break;
   }
   return (
         <Box position="relative" display="inline-flex">
             <CircularProgress variant="indeterminate" size={400}  style={{ color: circleColor}}/>
-            <Box
-                top={0}
-                left={0}
-                bottom={0}
-                right={0}
-                position="absolute"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-            >   
-                <Typography className={classes.root} variant="h1" component="div" color="black" style={{ fontSize: fontSize + 5, color: 'black' }}>{text}</Typography>
-
-            </Box>
             <Box
                 top={0}
                 left={0}
