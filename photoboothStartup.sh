@@ -3,8 +3,8 @@ export DISPLAY=:0.0
 export PROJECT_PATH=~/Desktop/wedding-photo-booth/
 
 # Mount he USB drive:
-sudo mount /dev/sda1 /mnt/usb -o uid=pi,gid=pi echo "USB drive mounted successfully"
-ln -s /mnt/usb ~/Desktop/wedding-photo-booth/photo-booth-api/uploads/
+sudo mount /dev/sda1 /mnt/usb/uploads -o uid=pi,gid=pi
+ln -s /mnt/usb/uploads ~/Desktop/wedding-photo-booth/photo-booth-api/
 
 # Git fetch and pull the latest version if possible
 if ping -q -c 1 -W 1 8.8.8.8 >/dev/null; then
@@ -40,14 +40,16 @@ tmux new-session -d -s "BACK"
 
 # Execute the yarn commands to bring up the services
 tmux send-keys -t API.0 \
- 'yarn --cwd ~/Desktop/wedding-photo-booth/photo-booth-api/ start' ENTER
+    'yarn --cwd ~/Desktop/wedding-photo-booth/photo-booth-api/ start' ENTER
 tmux send-keys -t UI.0 \
- 'yarn --cwd ~/Desktop/wedding-photo-booth/photo-booth/ serve -s build -p 3000 -C' ENTER
+    'yarn --cwd ~/Desktop/wedding-photo-booth/photo-booth/ serve -s build -p 3000 -C' ENTER
 
 # Wait for the API and UI services to be up
 while ! curl --output /dev/null --silent --head --fail http://localhost:3001; do sleep 1 && echo -n .; done;
-while ! curl --output /dev/null --silent --head --fail http://localhost:3000; do sleep 1 && echo -n .; done;
+while ! curl --output /dev/null --silent --head --fail http://localhost:3000; do sleep 1 && echo -n -; done;
 
 # Load up the windows
-tmux send-keys -t FRONT.0 'chromium-browser --start-fullscreen --user-data-dir=~/Documents/front --window-position=0,0 --new-window http://localhost:3000' ENTER
-tmux send-keys -t BACK.0 'chromium-browser --start-fullscreen --user-data-dir=~/Documents/back --window-position=1920,0 --new-window http://localhost:3000/back' ENTER
+tmux send-keys -t FRONT.0 \
+    'chromium-browser --start-fullscreen --user-data-dir=~/Documents/front --window-position=0,0 --new-window http://localhost:3000' ENTER
+tmux send-keys -t BACK.0 \
+    'chromium-browser --start-fullscreen --user-data-dir=~/Documents/back --window-position=1920,0 --new-window http://localhost:3000/back' ENTER
