@@ -49,7 +49,7 @@ while ! curl --output /dev/null --silent --head --fail http://localhost:3000; do
 # Load up the windows
 # NOTE: We want to open the front display second so that its selected and the keystrokes go through
 tmux send-keys -t BACK.0 \
-    'chromium-browser --start-fullscreen --user-data-dir=/home/pi/Documents/back --window-position=1920,0 --new-window --app=http://localhost:3000/#/back' ENTER
+    'chromium-browser --kiosk --start-fullscreen --user-data-dir=/home/pi/Documents/back --window-position=1920,0 --new-window --app=http://localhost:3000/#/back' ENTER
 tmux send-keys -t FRONT.0 \
-    'chromium-browser --start-fullscreen --user-data-dir=/home/pi/Documents/front --window-position=0,0 --new-window --app=http://localhost:3000/#/front' ENTER
+    'chromium-browser --kiosk --start-fullscreen --user-data-dir=/home/pi/Documents/front --window-position=0,0 --new-window --app=http://localhost:3000/#/front' ENTER
 
