@@ -1,6 +1,6 @@
 #!/bin/bash
 export DISPLAY=:0.0
-export PROJECT_PATH=~/Desktop/wedding-photo-booth/
+export PROJECT_PATH=/home/pi/Desktop/wedding-photo-booth/
 
 # Mount he USB drive:
 # Disabled for now. Need to write out process for mounting on boot
@@ -8,7 +8,7 @@ export PROJECT_PATH=~/Desktop/wedding-photo-booth/
 # sudo mount /dev/sda1 /mnt/usb/uploads -o uid=pi,gid=pi
 
 # Create Symbolic link to usb and api for saving pics
-# ln -s /mnt/usb/uploads ~/Desktop/wedding-photo-booth/photo-booth-api/
+# ln -s /mnt/usb/uploads /home/pi/Desktop/wedding-photo-booth/photo-booth-api/
 
 # Git fetch and pull the latest version if possible
 if ping -q -c 1 -W 1 8.8.8.8 >/dev/null; then
@@ -39,7 +39,7 @@ tmux new-session -d -s "BACK"
 
 # Execute the yarn commands to bring up the services
 tmux send-keys -t PHOTOBOOTH.0 \
-    'yarn --cwd ~/Desktop/wedding-photo-booth/photo-booth/ start' ENTER
+    'yarn --cwd /home/pi/Desktop/wedding-photo-booth/photo-booth/ start' ENTER
 
 # Wait for the API and UI services to be up
 while ! curl --output /dev/null --silent --head --fail http://localhost:3000; do sleep 1 && echo -n -; done;
@@ -47,7 +47,7 @@ while ! curl --output /dev/null --silent --head --fail http://localhost:3000; do
 # Load up the windows
 # NOTE: We want to open the front display second so that its selected and the keystrokes go through
 tmux send-keys -t BACK.0 \
-    'chromium-browser --start-fullscreen --user-data-dir=~/Documents/back --window-position=1920,0 --new-window http://localhost:3000/#/back' ENTER
+    'chromium-browser --start-fullscreen --user-data-dir=/home/pi/Documents/back --window-position=1920,0 --new-window http://localhost:3000/#/back' ENTER
 tmux send-keys -t FRONT.0 \
-    'chromium-browser --start-fullscreen --user-data-dir=~/Documents/front --window-position=0,0 --new-window http://localhost:3000/#/front' ENTER
+    'chromium-browser --start-fullscreen --user-data-dir=/home/pi/Documents/front --window-position=0,0 --new-window http://localhost:3000/#/front' ENTER
 
