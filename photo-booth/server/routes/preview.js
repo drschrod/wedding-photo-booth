@@ -1,5 +1,5 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 const getMostRecentFile = (dir) => {
   const files = orderReccentFiles(dir);
@@ -14,12 +14,12 @@ function getRandomInt(max) {
 const orderRecentFiles = (dir, route) => fs.readdirSync(dir)
   .filter((file) => fs.lstatSync(path.join(dir, file)).isFile())
   .map((file) => {
-    const multiplier = getRandomInt(4)
+    const multiplier = getRandomInt(4);
     return {
       img: `uploads/${file}`,
       cols: 1,
       rows: 3,
-      mtime: fs.lstatSync(path.join(dir, file)).mtime
+      mtime: fs.lstatSync(path.join(dir, file)).mtime,
     };
   })
   .sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
@@ -31,11 +31,11 @@ const getSortedImages = (req, res) => {
   //   author: 'author',
   //   cols: 2,
   // }];
-  getMostRecentFile('uploads/')
-}
+  getMostRecentFile('uploads/');
+};
 
 module.exports = {
   getSortedImages,
   getMostRecentFile,
   orderRecentFiles,
-}
+};

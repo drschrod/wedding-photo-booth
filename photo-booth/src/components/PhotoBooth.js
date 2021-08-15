@@ -170,7 +170,7 @@ function PhotoBooth() {
     }
   }, []);
 
-  const CameraOverlay = (<>
+  const CameraOverlay = (<React.Fragment>
     <Box
       top={0}
       left={0}
@@ -197,7 +197,7 @@ function PhotoBooth() {
         <rect {...{ width: resolutions['qHD'].width * 0.90, height: resolutions['qHD'].height * 0.90 }} />
       </svg>
     </Box>
-  </>)
+  </React.Fragment>);
   const PhotoResult = (<Fade in={photoWasJustTaken}>
     <Box
       top={0}

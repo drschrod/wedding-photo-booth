@@ -1,30 +1,34 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {
-    BrowserRouter as Router,
     Switch,
     Route,
-    Link
+    Link,
   } from "react-router-dom";
 import PhotoBooth from './components/PhotoBooth';
 import BacksidePreview from './components/BacksidePreview';
-
   
-  export default function App() {
-    return (
-      <Router>
-        <div>
-          {/* A <Switch> looks through its children <Route>s and
-              renders the first one that matches the current URL. */}
-          <Switch>
-            <Route exact path="/front">
-              <PhotoBooth />
-            </Route>
-            <Route exact path="/back">
-              <BacksidePreview />
-            </Route>
-          </Switch>
-        </div>
-      </Router>
-    );
-  }
+export default function App() {
+  const Dashboard = (<Route exact path="/">
+    <div>
+      <h1>No Route Specified</h1>
+      <Link to={'./front'}>
+        <button variant="raised">
+            Front Window
+        </button>
+      </Link>
+      <Link to={'./back'}>
+        <button variant="raised">
+            Back Window
+        </button>
+      </Link>
+    </div>
+  </Route>);
+  return (
+    <div>
+        <Switch>
+            <Route path="/front" name="Front" component={PhotoBooth} />
+            <Route path="/back" name="Back" component={BacksidePreview} />
+        </Switch>
+      </div>
+  );
+}

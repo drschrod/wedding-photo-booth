@@ -2,15 +2,16 @@
   "name": "wedding-photo-booth-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/front",
-  "proxy": "http://localhost:3001",
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.3",
+    "chalk": "^4.1.2",
+    "express": "^4.17.1",
     "material-ui-image": "^3.3.2",
+    "morgan": "^1.10.0",
     "react": "^17.0.1",
     "react-alice-carousel": "^2.4.0",
     "react-dom": "^17.0.1",
@@ -22,10 +23,12 @@
     "webcam-easy": "^1.0.5"
   },
   "scripts": {
-    "start": "react-scripts start",
     "build": "react-scripts build",
+    "start": "yarn run build && (cd server && yarn start)",
+    "start-client": "react-scripts start",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint-fix": "eslint '**/*.js' --fix --ignore-pattern node_modules/"
   },
   "eslintConfig": {
     "extends": [
@@ -44,5 +47,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.24.0"
   }
 }
