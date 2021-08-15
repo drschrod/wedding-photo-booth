@@ -8,7 +8,7 @@ export PROJECT_PATH=~/Desktop/wedding-photo-booth/
 # sudo mount /dev/sda1 /mnt/usb/uploads -o uid=pi,gid=pi
 
 # Create Symbolic link to usb and api for saving pics
-ln -s /mnt/usb/uploads ~/Desktop/wedding-photo-booth/photo-booth-api/
+# ln -s /mnt/usb/uploads ~/Desktop/wedding-photo-booth/photo-booth-api/
 
 # Git fetch and pull the latest version if possible
 if ping -q -c 1 -W 1 8.8.8.8 >/dev/null; then
@@ -46,7 +46,11 @@ tmux new-session -d -s "BACK"
 tmux send-keys -t API.0 \
     'yarn --cwd ~/Desktop/wedding-photo-booth/photo-booth-api/ start' ENTER
 tmux send-keys -t UI.0 \
-    'yarn --cwd ~/Desktop/wedding-photo-booth/photo-booth/ serve -s build -p 3000 -C' ENTER
+    'yarn --cwd ~/Desktop/wedding-photo-booth/photo-booth/ start' ENTER
+# NOTE: Need to productionalize this
+# tmux send-keys -t UI.0 \
+#     'yarn --cwd ~/Desktop/wedding-photo-booth/photo-booth/ build' ENTER \
+#     'yarn --cwd ~/Desktop/wedding-photo-booth/photo-booth/ serve -s build -p 3000 -C --no-clipboard' ENTER
 
 # Wait for the API and UI services to be up
 # while ! curl --output /dev/null --silent --head --fail http://localhost:3001; do sleep 1 && echo -n .; done;
