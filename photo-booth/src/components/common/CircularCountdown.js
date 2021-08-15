@@ -1,44 +1,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
+import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 
 const useStyles = makeStyles((theme) => ({
     root: {
       color: 'white'
     },
   }));
-
 function CircularProgressWithLabel(props) {
   const classes = useStyles();
   let circleColor;
-  let text = 'SMILE'
+  let text;
   let fontSize = 300;
   switch (props.displayValue) {
     case 3:
         text = 3;
-        circleColor = 'red' 
+        circleColor = 'red';
         break;
     case 2:
         text = 2;
-        circleColor = 'yellow'
+        circleColor = 'yellow';
         break;
     case 1:
         text = 1;
-        circleColor = 'yellow'
-        break;
-    case 0:
-        fontSize = 100;
-        circleColor='green'
+        circleColor = 'green';
         break;
     default:
-        text = props.displayValue;
-        circleColor = 'green'
+        circleColor = 'yellow';
+        text = 'SMILE!';
         break;
   }
-  return (
+
+    return (
         <Box position="relative" display="inline-flex">
             <CircularProgress variant="indeterminate" size={400}  style={{ color: circleColor}}/>
             <Box
@@ -50,9 +46,12 @@ function CircularProgressWithLabel(props) {
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
+                fontWeight="fontWeightBold"
+                fontSize={fontSize}
             >   
-
-                <Typography className={classes.root} variant="h1" component="div" color="white" style={{ fontSize }}>{text}</Typography>
+                {
+                    props.displayValue > 1 ? text : (<EmojiEmotionsIcon style={{ fontSize, fill: "yellow" }}></EmojiEmotionsIcon>)
+                }
             </Box>
         </Box>
     );

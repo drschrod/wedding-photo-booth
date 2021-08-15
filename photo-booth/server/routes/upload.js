@@ -30,7 +30,7 @@ const upload = (file, res) => {
   try {
     console.log('Upload Request Received');
     const { data } = decodeBase64Image(file);
-    saveImage(data, `uploads/${+new Date()}-photo.png`);
+    saveImage(data, `public/uploads/${+new Date()}-photo.png`);
     return res.status(201).json({
       message: 'Image uploaded successfully',
     });

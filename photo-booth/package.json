@@ -28,7 +28,7 @@
     "start-client": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint-fix": "eslint '**/*.js' --fix --ignore-pattern node_modules/"
+    "lint-fix": "eslint '**/*.js' --fix --ignore-pattern node_modules/ --ignore-pattern build/"
   },
   "eslintConfig": {
     "extends": [

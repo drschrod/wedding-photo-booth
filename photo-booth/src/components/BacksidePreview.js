@@ -61,24 +61,28 @@ const BacksidePreview = () => {
   const [inState, setIn] = useState(false);
 
   const refreshSlideShowChoices = async () => {
-    setIsLoaded(false);
-      const imagePreview = (await fetchImagePreview()).body;
-      setSlideshowImgs(imagePreview)
-      const imagesSet = imagePreview.map((i) => <img className={classes.carouselImgs} key={i.img} src={i.img} onDragStart={handleDragStart} />,)
-      setImages(imagesSet);
-      setIsLoaded(true);
-      setTimeout(() => {
-        refreshSlideShowChoices();
-      }, 60000);
+    const imagePreview = (await fetchImagePreview()).body;
+    setSlideshowImgs(imagePreview)
+    const imagesSet = imagePreview.map((i) => <img className={classes.carouselImgs} key={i.img} src={i.img} onDragStart={handleDragStart} />,)
+    setImages(imagesSet);
+    setIsLoaded(true);
+    setTimeout(() => {
+      refreshSlideShowChoices();
+    }, 60000);
   };
 
   useEffect(async () => {
     if (!isLoaded) {
       await refreshSlideShowChoices();
     }
-  });
+  }, []);
 
   useEffect(() => {
+    try {
+      clearInterval(intervalId);
+    } catch (error) {
+      // Its fine this is a safety precaution
+    }
     const id = setInterval(() => {
       if (slideShowImgs) {
         setIn(false);
@@ -126,6 +130,8 @@ const BacksidePreview = () => {
       />
     </Box>
   </div>);
+
+  const todaysDate = new Date();
   return (
     <div tabIndex="-9999" className={classes.root}>
 
@@ -134,12 +140,24 @@ const BacksidePreview = () => {
           <CardMedia className={classes.image} image={slideShowImgs[slideNumber].img} />
         </Fade>
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            {'Esteban & Meagan'}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {'2021'}
-          </Typography>
+          <Box
+            fontWeight="fontWeightBold"
+            fontSize={40}
+            textAlign="center"
+            fontFamily='"Helvetica Neue"'
+          >
+          {'Esteban & Meagan'}
+          </Box>
+          <Box
+            fontFamily="Monospace"
+            fontWeight='fontWeightLight'
+            fontSize={20}
+            textAlign="center"
+            fontStyle="oblique"
+            letterSpacing={5}
+          >
+          {todaysDate.toLocaleString('default', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+          </Box>
         </CardContent>
       </Card>
       {bottomSlideShow}
