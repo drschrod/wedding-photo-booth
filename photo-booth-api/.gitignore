@@ -130,6 +130,5 @@ dmypy.json
 node_modules
 
 # other
-uploads/*
-
+uploads
 .DS_Store
