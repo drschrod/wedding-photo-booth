@@ -37,12 +37,14 @@ tmux new-session -d -s "PHOTOBOOTH"
 tmux new-session -d -s "FRONT"
 tmux new-session -d -s "BACK"
 
+yarn --cwd /home/pi/Desktop/wedding-photo-booth/photo-booth/
+yarn --cwd /home/pi/Desktop/wedding-photo-booth/photo-booth/server
 # Execute the yarn commands to bring up the services
 tmux send-keys -t PHOTOBOOTH.0 \
     'yarn --cwd /home/pi/Desktop/wedding-photo-booth/photo-booth/ start' ENTER
 
 # Wait for the API and UI services to be up
-while ! curl --output /dev/null --silent --head --fail http://localhost:3000; do sleep 1 && echo -n -; done;
+while ! curl --output /dev/null --silent --head --fail http://localhost:3000; do sleep 1 && echo -n .; done;
 
 # Load up the windows
 # NOTE: We want to open the front display second so that its selected and the keystrokes go through
