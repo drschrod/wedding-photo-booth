@@ -45,7 +45,9 @@ tmux send-keys -t PHOTOBOOTH.0 \
 while ! curl --output /dev/null --silent --head --fail http://localhost:3000; do sleep 1 && echo -n -; done;
 
 # Load up the windows
-tmux send-keys -t FRONT.0 \
-    'chromium-browser --start-fullscreen --user-data-dir=~/Documents/front --window-position=0,0 --new-window http://localhost:3000/#/front' ENTER
+# NOTE: We want to open the front display second so that its selected and the keystrokes go through
 tmux send-keys -t BACK.0 \
     'chromium-browser --start-fullscreen --user-data-dir=~/Documents/back --window-position=1920,0 --new-window http://localhost:3000/#/back' ENTER
+tmux send-keys -t FRONT.0 \
+    'chromium-browser --start-fullscreen --user-data-dir=~/Documents/front --window-position=0,0 --new-window http://localhost:3000/#/front' ENTER
+
