@@ -3,7 +3,11 @@ export DISPLAY=:0.0
 export PROJECT_PATH=~/Desktop/wedding-photo-booth/
 
 # Mount he USB drive:
-sudo mount /dev/sda1 /mnt/usb/uploads -o uid=pi,gid=pi
+# Disabled for now. Need to write out process for mounting on boot
+# refer to https://raspberrytips.com/mount-usb-drive-raspberry-pi/
+# sudo mount /dev/sda1 /mnt/usb/uploads -o uid=pi,gid=pi
+
+# Create Symbolic link to usb and api for saving pics
 ln -s /mnt/usb/uploads ~/Desktop/wedding-photo-booth/photo-booth-api/
 
 # Git fetch and pull the latest version if possible
