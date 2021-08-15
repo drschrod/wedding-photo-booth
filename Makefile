@@ -13,7 +13,6 @@ create-aliases:
 # Creates an uploads folder and then creates a symbolic link between the USB drive and the uploads folder
 # NOTE: Might circumvent the API image saving mechanism in favor of leveraging the browser saving to a specific downloads folder 
 setup:
-	mkdir -p ./photo-booth-api/uploads
 	cp ./autostart ~/.config/lxsession/LXDE-pi/
 
 clean-uploads:
