@@ -49,8 +49,8 @@ tmux send-keys -t UI.0 \
     'yarn --cwd ~/Desktop/wedding-photo-booth/photo-booth/ serve -s build -p 3000 -C' ENTER
 
 # Wait for the API and UI services to be up
-while ! curl --output /dev/null --silent --head --fail http://localhost:3001; do sleep 1 && echo -n .; done;
-while ! curl --output /dev/null --silent --head --fail http://localhost:3000; do sleep 1 && echo -n -; done;
+# while ! curl --output /dev/null --silent --head --fail http://localhost:3001; do sleep 1 && echo -n .; done;
+# while ! curl --output /dev/null --silent --head --fail http://localhost:3000; do sleep 1 && echo -n -; done;
 
 # Load up the windows
 tmux send-keys -t FRONT.0 \
