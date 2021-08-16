@@ -12,6 +12,8 @@ export PROJECT_PATH=/home/pi/Desktop/wedding-photo-booth/
 
 # Git fetch and pull the latest version if possible
 if ping -q -c 1 -W 1 8.8.8.8 >/dev/null; then
+    git --git-dir $PROJECT_PATH.git fetch
+
     UPSTREAM=${1:-'@{u}'}
     LOCAL=$(git --git-dir $PROJECT_PATH.git rev-parse @)
     REMOTE=$(git --git-dir $PROJECT_PATH.git rev-parse "$UPSTREAM")
@@ -22,8 +24,11 @@ if ping -q -c 1 -W 1 8.8.8.8 >/dev/null; then
     elif [ $LOCAL = $BASE ]; then
         echo "Need to pull"
         git --git-dir $PROJECT_PATH.git pull
+        yarn --cwd /home/pi/Desktop/wedding-photo-booth/photo-booth/
+        yarn --cwd /home/pi/Desktop/wedding-photo-booth/photo-booth/server
+        yarn --cwd /home/pi/Desktop/wedding-photo-booth/photo-booth/ build
     elif [ $REMOTE = $BASE ]; then
-        echo "Need to push"
+        echo "Has local changes. Purging"
         git --git-dir $PROJECT_PATH.git checkout .
     else
         echo "Diverged"
@@ -37,11 +42,10 @@ tmux new-session -d -s "PHOTOBOOTH"
 tmux new-session -d -s "FRONT"
 tmux new-session -d -s "BACK"
 
-yarn --cwd /home/pi/Desktop/wedding-photo-booth/photo-booth/
-yarn --cwd /home/pi/Desktop/wedding-photo-booth/photo-booth/server
+
 # Execute the yarn commands to bring up the services
 tmux send-keys -t PHOTOBOOTH.0 \
-    'yarn --cwd /home/pi/Desktop/wedding-photo-booth/photo-booth/ start' ENTER
+    'yarn --cwd /home/pi/Desktop/wedding-photo-booth/photo-booth/server/ start' ENTER
 
 # Wait for the API and UI services to be up
 while ! curl --output /dev/null --silent --head --fail http://localhost:3000; do sleep 1 && echo -n .; done;
