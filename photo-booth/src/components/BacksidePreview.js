@@ -3,7 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
 import { fetchImagePreview } from '../modules/requests';
-import { Fade, Box, CardMedia, Card, CardContent, Typography } from '@material-ui/core';
+import { Box } from '@material-ui/core';
+import PhotoWithLabel from './common/PhotoWithLabel';
+import { resolutions } from '../modules/camera';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,13 +60,12 @@ const BacksidePreview = () => {
   const [images, setImages] = useState([]);
   const [slideShowImgs, setSlideshowImgs] = useState([]);
   const [slideNumber, setSlideNumber] = useState(0);
-  const [inState, setIn] = useState(false);
 
   const refreshSlideShowChoices = async () => {
     const imagePreview = (await fetchImagePreview()).body;
-    setSlideshowImgs(imagePreview)
+    setSlideshowImgs(() => imagePreview)
     const imagesSet = imagePreview.map((i) => <img className={classes.carouselImgs} key={i.img} src={i.img} onDragStart={handleDragStart} />,)
-    setImages(imagesSet);
+    setImages(() => imagesSet);
     setIsLoaded(true);
     setTimeout(() => {
       refreshSlideShowChoices();
@@ -85,7 +86,6 @@ const BacksidePreview = () => {
     }
     const id = setInterval(() => {
       if (slideShowImgs) {
-        setIn(false);
         setSlideNumber(prevState => {
           const nextSlide = prevState + 1;
           return nextSlide >= slideShowImgs.length ? 0 : nextSlide;
@@ -97,12 +97,6 @@ const BacksidePreview = () => {
       clearInterval(intervalId);
     }
   }, [images])
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIn(true);
-    }, timeBetweenSlides);
-  }, [slideNumber])
 
   if (!isLoaded) {
     return null;
@@ -131,37 +125,11 @@ const BacksidePreview = () => {
     </Box>
   </div>);
 
-  const todaysDate = new Date();
   return (
-    <div tabIndex="-9999" className={classes.root}>
-
-      <Card className={classes.cardRoot}>
-        <Fade in={inState} timeout={animationSpeed}>
-          <CardMedia className={classes.image} image={slideShowImgs[slideNumber].img} />
-        </Fade>
-        <CardContent>
-          <Box
-            fontWeight="fontWeightBold"
-            fontSize={40}
-            textAlign="center"
-            fontFamily='"Helvetica Neue"'
-          >
-          {'Esteban & Meagan'}
-          </Box>
-          <Box
-            fontFamily="Monospace"
-            fontWeight='fontWeightLight'
-            fontSize={20}
-            textAlign="center"
-            fontStyle="oblique"
-            letterSpacing={5}
-          >
-          {todaysDate.toLocaleString('default', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
-          </Box>
-        </CardContent>
-      </Card>
+    <>
+      <PhotoWithLabel photo={slideShowImgs[slideNumber].img} height={resolutions['qHD'].height * 0.9} width={resolutions['qHD'].width * 0.9} classes={classes}></PhotoWithLabel>
       {bottomSlideShow}
-    </div>
+    </>
 
   );
 };

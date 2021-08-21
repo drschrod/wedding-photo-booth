@@ -28,15 +28,17 @@ function CircularProgressWithLabel(props) {
         text = 1;
         circleColor = 'green';
         break;
-    default:
+    case 0:
         circleColor = 'yellow';
         text = 'SMILE!';
         break;
+    default:
+        text = props.displayValue
   }
 
     return (
-        <Box position="relative" display="inline-flex">
-            <CircularProgress variant="indeterminate" size={400}  style={{ color: circleColor}}/>
+        // <Box position="relative" display="inline-flex">
+            // {/* <CircularProgress variant="indeterminate" size={400}  style={{ color: circleColor}}/> */}
             <Box
                 top={0}
                 left={0}
@@ -50,16 +52,15 @@ function CircularProgressWithLabel(props) {
                 fontSize={fontSize}
             >   
                 {
-                    props.displayValue > 1 ? text : (<EmojiEmotionsIcon style={{ fontSize, fill: "yellow" }}></EmojiEmotionsIcon>)
+                    props.displayValue > 0 ? text : (<EmojiEmotionsIcon style={{ fontSize, fill: "yellow" }}></EmojiEmotionsIcon>)
                 }
             </Box>
-        </Box>
+        // </Box>
     );
 }
 
 CircularProgressWithLabel.propTypes = {
     displayValue: PropTypes.number.isRequired,
-    zoomInOrOut: PropTypes.bool.isRequired
 };
 
 export default function CircularCountdown({ count }) {
