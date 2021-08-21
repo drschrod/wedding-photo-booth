@@ -33,6 +33,7 @@ function CameraViewFinder(props) {
 
     const endPhotoTimeout = oneSecond * 30;
     const currentlyTakingPhoto = countDown >= 0 && !capturedImg;
+    const inBetweenRounds = secondsUntilNextRound > 0;
     const { 
       classes, webcamDimensions, resolution,
     } = props;
@@ -99,7 +100,7 @@ function CameraViewFinder(props) {
 
     return (
         <div className={classes.cameraFeed}>
-          {secondsUntilNextRound > 0 ? (
+          {inBetweenRounds ? (
               <>
                 <PhotoResultsScreen photo={capturedImg} {...{ ...webcamDimensions, endPhotoTimeout }} />
                 <Box
@@ -129,14 +130,15 @@ function CameraViewFinder(props) {
               </Box>
             </Paper>)
           }
-          {currentlyTakingPhoto ?
-            <Box
+          {currentlyTakingPhoto && (<Box
               display="flex"
               alignItems="center"
               justifyContent="center" margin="10%">
               <CountDownScreen count={countDown} />
-            </Box> :
-            <InstructionsFooter></InstructionsFooter>
+            </Box>)
+          }
+          {
+            !inBetweenRounds && <InstructionsFooter></InstructionsFooter>
           }
         </div>
       )
