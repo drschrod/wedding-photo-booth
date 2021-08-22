@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { resolutions, videoConstraints } from '../modules/camera';
-import CameraViewfinder from './frontDisplay/CameraViewFinder';
+import { resolutions, videoConstraints } from '../../modules/camera';
+import CameraViewfinder from './CameraViewFinder';
 
 const webcamDimensions = videoConstraints();
 

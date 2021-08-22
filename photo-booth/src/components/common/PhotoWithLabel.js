@@ -7,10 +7,11 @@ const PhotoWithLabel = (props) => {
     const { photo, height, width, classes, } = props
   const todaysDate = new Date();
   return (
-    <div tabIndex="-9999" className={classes.root}>
+    <div tabIndex="-9999" aria-label="photo with label" className={classes.root}>
       <Card className={classes.cardRoot}>
         <Image
           src={photo}
+          aria-label={"main image"}
           aspectRatio={16/9}
           imageStyle={{height, width, }}
           disableSpinner
@@ -43,7 +44,7 @@ const PhotoWithLabel = (props) => {
 
 export default PhotoWithLabel;
 PhotoWithLabel.propTypes = {
-  photo: PropTypes.object,
+  photo: PropTypes.any,
   height: PropTypes.number,
   width: PropTypes.number,
   classes: PropTypes.object,

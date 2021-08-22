@@ -5,8 +5,8 @@ import { Box, Paper } from '@material-ui/core';
 import CameraOverlay from './CameraOverlay';
 import { postImage } from '../../../modules/requests';
 import PhotoResultsScreen from '../PhotoResultsScreen';
-import CountDownScreen from '../../CountDownScreen';
 import InstructionsFooter from '../InstructionsFooter';
+import CircularCountdown from '../../common/CircularCountdown';
 
 const oneSecond = 1000;
 const getCountDownIntervalLength = (step) => {
@@ -107,7 +107,7 @@ function CameraViewFinder(props) {
                   display="flex"
                   alignItems="center"
                   justifyContent="center" margin="10%">
-                  <CountDownScreen count={secondsUntilNextRound} />
+                  <CircularCountdown count={secondsUntilNextRound} />
                 </Box>
               </>
             ) :
@@ -134,7 +134,7 @@ function CameraViewFinder(props) {
               display="flex"
               alignItems="center"
               justifyContent="center" margin="10%">
-              <CountDownScreen count={countDown} />
+              <CircularCountdown count={countDown} />
             </Box>)
           }
           {

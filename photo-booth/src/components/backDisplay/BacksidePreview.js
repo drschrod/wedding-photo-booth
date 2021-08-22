@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
-import { fetchImagePreview } from '../modules/requests';
+import { fetchImagePreview } from '../../modules/requests';
 import { Box } from '@material-ui/core';
-import PhotoWithLabel from './common/PhotoWithLabel';
-import { resolutions } from '../modules/camera';
+import PhotoWithLabel from '../common/PhotoWithLabel';
+import { resolutions } from '../../modules/camera';
 
 const useStyles = makeStyles((theme) => ({
   root: {

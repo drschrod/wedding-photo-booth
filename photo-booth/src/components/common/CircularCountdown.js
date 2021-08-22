@@ -52,7 +52,7 @@ function CircularProgressWithLabel(props) {
                 fontSize={fontSize}
             >   
                 {
-                    props.displayValue > 0 ? text : (<EmojiEmotionsIcon style={{ fontSize, fill: "yellow" }}></EmojiEmotionsIcon>)
+                    props.displayValue > 0 ? text : (<EmojiEmotionsIcon aria-label="smile-face-icon" style={{ fontSize, fill: "yellow" }}></EmojiEmotionsIcon>)
                 }
             </Box>
         // </Box>

@@ -3,8 +3,8 @@ import {
     Switch,
     Route,
 } from "react-router-dom";
-import PhotoBooth from './components/PhotoBooth';
-import BacksidePreview from './components/BacksidePreview';
+import PhotoBooth from './components/frontDisplay/PhotoBooth';
+import BacksidePreview from './components/backDisplay/BacksidePreview';
   
 export default function App() {
   return (
