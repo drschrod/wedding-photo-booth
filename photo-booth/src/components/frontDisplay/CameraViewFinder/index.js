@@ -63,16 +63,21 @@ function CameraViewFinder(props) {
         }
     }, oneSecond);
     const handleKeyDown = ({ key }) => {
-      switch (key) {
-        case 't':
-          setCountDown(() => 3);
-          break;
-        default:
-          // Default force reset page
-          console.log('Resetting page');
-          window.location.reload(false);
-          break;
+      if (process.env.NODE_ENV !== 'production') {
+        switch (key) {
+          case 't':
+            setCountDown(() => 3);
+            break;
+          default:
+            // Default force reset page
+            console.log('Resetting page');
+            window.location.reload(false);
+            break;
+        }
+      } else {
+        setCountDown(() => 3);
       }
+      
     };
 
     useEffect(() => {
