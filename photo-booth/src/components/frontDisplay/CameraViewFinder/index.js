@@ -9,6 +9,7 @@ import InstructionsFooter from '../InstructionsFooter';
 import CircularCountdown from '../../common/CircularCountdown';
 
 const oneSecond = 1000;
+const defaultTimeBetweenPics = 10;
 const getCountDownIntervalLength = (step) => {
   switch (step) {
     case 0:
@@ -37,7 +38,24 @@ function CameraViewFinder(props) {
     const { 
       classes, webcamDimensions, resolution,
     } = props;
-
+    
+    function handleKeyUp({ key }) {
+      if (process.env.NODE_ENV !== 'production') {
+        switch (key) {
+          case 't':
+            startPhotoCountDown()
+            break;
+          default:
+            // Default force reset page
+            console.log('Resetting page');
+            window.location.reload(false);
+            break;
+        }
+      } else {
+        startPhotoCountDown()
+      }
+      
+    }
     // We need access to the following via props:
     const capture = React.useCallback(async () => {
       // NOTE: Do not specify the dimensions in the getScreenshot fn
@@ -51,34 +69,23 @@ function CameraViewFinder(props) {
         setCountDown((prev) => prev - 1);
         if (countDown === 0) {
           capture();
-          setSecondsUntilNextRound(() => 20)
+          setSecondsUntilNextRound(() => defaultTimeBetweenPics)
         }
       }, getCountDownIntervalLength(countDown));
     
+    const startPhotoCountDown = () => {
+      window.removeEventListener('keyup', handleKeyUp);
+      setCountDown(() => 3);
+    }
+
     const nextRoundCountdownStep = () => setTimeout(() => {
         if (secondsUntilNextRound > 0) {
           setSecondsUntilNextRound((prev) => prev - 1);
         } else {
           setCapturedImage(() => null);
+          window.addEventListener('keyup', handleKeyUp);
         }
     }, oneSecond);
-    const handleKeyDown = ({ key }) => {
-      if (process.env.NODE_ENV !== 'production') {
-        switch (key) {
-          case 't':
-            setCountDown(() => 3);
-            break;
-          default:
-            // Default force reset page
-            console.log('Resetting page');
-            window.location.reload(false);
-            break;
-        }
-      } else {
-        setCountDown(() => 3);
-      }
-      
-    };
 
     useEffect(() => {
       if (countDown >= 0) {
@@ -87,7 +94,7 @@ function CameraViewFinder(props) {
     }, [countDown])
 
     useEffect(() => {
-      if (secondsUntilNextRound === 20) {
+      if (secondsUntilNextRound === defaultTimeBetweenPics) {
         setTimeout(() => {
           nextRoundCountdownStep();
         }, 2 * oneSecond);
@@ -97,9 +104,9 @@ function CameraViewFinder(props) {
     }, [secondsUntilNextRound, setSecondsUntilNextRound])
 
     useEffect(() => {
-      document.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('keyup', handleKeyUp);
       return function cleanup() {
-        document.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('keyup', handleKeyUp);
       }
     }, []);
 
@@ -113,6 +120,7 @@ function CameraViewFinder(props) {
                   alignItems="center"
                   justifyContent="center" margin="10%">
                   <CircularCountdown count={secondsUntilNextRound} />
+                  <h3>Next Photo in</h3>
                 </Box>
               </>
             ) :

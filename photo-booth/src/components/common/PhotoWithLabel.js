@@ -33,7 +33,7 @@ const PhotoWithLabel = (props) => {
             fontStyle="oblique"
             letterSpacing={5}
           >
-          {todaysDate.toLocaleString('default', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+          {/* {todaysDate.toLocaleString('default', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })} */}
           </Box>
         </CardContent>
       </Card>
